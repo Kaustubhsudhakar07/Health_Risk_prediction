@@ -52,25 +52,35 @@ def ask_gemini_health_assistant(user_question: str, api_key: str = None, patient
 
         full_prompt += f"USER QUESTION: {user_question}\n\nASSISTANT ANSWER:"
 
-        # Try gemini-3.7-flash as primary model with fallbacks
-        for model_name in ["gemini-3.7-flash", "gemini-2.0-flash", "gemini-1.5-flash", "gemini-pro"]:
+        # Active Google Gemini API models in order of priority
+        candidate_models = ["gemini-2.0-flash", "gemini-1.5-flash", "gemini-1.5-pro", "gemini-pro"]
+
+        last_error = None
+        for model_name in candidate_models:
             try:
                 model = genai.GenerativeModel(model_name)
-                response = model.generate_content(full_prompt)
-                if response and response.text:
+                # Set a strict 15s timeout to prevent UI spinner hangs
+                response = model.generate_content(
+                    full_prompt,
+                    request_options={"timeout": 15},
+                )
+                if response and hasattr(response, "text") and response.text:
                     return response.text
-            except Exception:
+            except Exception as model_err:
+                last_error = model_err
                 continue
 
-        # Fallback if specific model names fail
-        model = genai.GenerativeModel("gemini-3.7-flash")
-        response = model.generate_content(full_prompt)
-        return response.text
+        if last_error:
+            raise last_error
+
+        return "⚠️ Unable to receive a response from Google Gemini. Please check your API key or network connection."
 
     except Exception as e:
         err_msg = str(e)
-        if "API_KEY_INVALID" in err_msg or "400" in err_msg:
+        if "API_KEY_INVALID" in err_msg or "400" in err_msg or "API key not valid" in err_msg:
             return "❌ **Invalid API Key:** The provided Gemini API Key was rejected by Google. Please verify your key at [Google AI Studio](https://aistudio.google.com/app/apikey)."
-        elif "QUOTA" in err_msg or "429" in err_msg:
+        elif "QUOTA" in err_msg or "429" in err_msg or "ResourceExhausted" in err_msg:
             return "⏳ **Rate Limit Exceeded:** You have reached the free Gemini tier rate limit. Please wait a minute and try again."
+        elif "timeout" in err_msg.lower() or "deadline" in err_msg.lower():
+            return "⏱️ **Request Timed Out:** Google's Gemini API did not respond within 15 seconds. Please try asking again."
         return f"⚠️ **Gemini API Error:** {err_msg}"
