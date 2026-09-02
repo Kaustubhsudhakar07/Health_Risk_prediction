@@ -1,6 +1,6 @@
 """
 CardioHealth AI: Real-Time Patient Health Risk Prediction & Stratification Dashboard.
-Built with Streamlit, Scikit-Learn, XGBoost, CatBoost, LightGBM, SHAP, and Google Gemini AI.
+Built with Streamlit, Scikit-Learn, XGBoost, CatBoost, LightGBM, SHAP, and Google Gemini 3.7 Flash.
 """
 
 import os
@@ -22,7 +22,7 @@ from src.predict import HealthRiskPredictor
 
 # Page Configuration
 st.set_page_config(
-    page_title="CardioHealth AI • Patient Risk Stratification & Gemini AI",
+    page_title="CardioHealth AI • Patient Risk Stratification & Gemini 3.7 Flash",
     page_icon="🩺",
     layout="wide",
     initial_sidebar_state="collapsed",
@@ -270,9 +270,9 @@ predictor = get_predictor()
 # Hero Header
 st.markdown("""
 <div class="hero-wrapper">
-    <div class="hero-tag">⚡ AI Clinical Intelligence • Ensemble Engine + Google Gemini AI</div>
+    <div class="hero-tag">⚡ AI Clinical Intelligence • Ensemble Engine + Google Gemini 3.7 Flash</div>
     <div class="hero-title">CardioHealth AI</div>
-    <div class="hero-desc">State-of-the-art predictive health condition stratification engine analyzing physiological vitals, metabolic efficiency, and behavioral biomarkers with conversational Gemini AI.</div>
+    <div class="hero-desc">State-of-the-art predictive health condition stratification engine analyzing physiological vitals, metabolic efficiency, and behavioral biomarkers with conversational Gemini 3.7 Flash.</div>
 </div>
 """, unsafe_allow_html=True)
 
@@ -560,16 +560,16 @@ Vitals: BMI {bmi_val} ({bmi_status}), HR {hr_val} bpm ({hr_status}), Sleep {slee
 
 
 # -------------------------------------------------------------
-# TAB 2: AI Health Question Zone (Powered by Google Gemini)
+# TAB 2: AI Health Question Zone (Powered by Google Gemini 3.7 Flash)
 # -------------------------------------------------------------
 with tab2:
-    st.markdown("### 🤖 AI Health Assistant & Clinical Question Zone")
-    st.caption("Ask clinical questions, request tailored workout/diet plans, or understand biomarker interactions powered by Google Gemini AI.")
+    st.markdown("### 🤖 AI Health Assistant & Clinical Question Zone (Gemini 3.7 Flash)")
+    st.caption("Ask clinical questions, request tailored workout/diet plans, or understand biomarker interactions powered by Google Gemini 3.7 Flash.")
 
     # API Key Configuration Container
     gemini_key = os.environ.get("GEMINI_API_KEY", "")
     
-    with st.expander("🔑 Configure Free Google Gemini API Key", expanded=not bool(gemini_key)):
+    with st.expander("🔑 Configure Free Google Gemini 3.7 Flash API Key", expanded=not bool(gemini_key)):
         col_k1, col_k2 = st.columns([3, 1])
         with col_k1:
             entered_key = st.text_input(
@@ -601,7 +601,7 @@ with tab2:
         include_context = st.checkbox("Attach active patient assessment context to Gemini prompt", value=True)
     else:
         include_context = False
-        st.info("💡 Tip: You can analyze a patient in **Tab 1**, and Gemini will automatically incorporate their specific biometrics into its advice!")
+        st.info("💡 Tip: You can analyze a patient in **Tab 1**, and Gemini 3.7 Flash will automatically incorporate their specific biometrics into its advice!")
 
     st.markdown("##### 💬 Suggested Clinical & Lifestyle Inquiries:")
     quick_prompts = [
@@ -628,7 +628,7 @@ with tab2:
         height=100,
     )
 
-    if st.button("✨ Ask Gemini Health AI", use_container_width=True):
+    if st.button("✨ Ask Gemini 3.7 Flash", use_container_width=True):
         if not user_query.strip():
             st.warning("Please enter a question first.")
         else:
@@ -640,7 +640,7 @@ with tab2:
                     "payload": st.session_state["analyzed_payload"],
                 }
 
-            with st.spinner("🧠 Consulting Gemini AI Clinical Intelligence..."):
+            with st.spinner("🧠 Consulting Google Gemini 3.7 Flash Clinical Intelligence..."):
                 ai_response = ask_gemini_health_assistant(
                     user_question=user_query,
                     api_key=active_api_key,
@@ -649,7 +649,7 @@ with tab2:
 
             st.markdown(f"""
             <div class="ai-chat-box">
-                <div class="ai-badge">✨ Gemini Health AI Response</div>
+                <div class="ai-badge">✨ Google Gemini 3.7 Flash Response</div>
                 <div>{ai_response}</div>
             </div>
             """, unsafe_allow_html=True)

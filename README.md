@@ -5,14 +5,14 @@
 [![XGBoost](https://img.shields.io/badge/XGBoost-2.0+-EB5424?logo=xgboost&logoColor=white)](https://xgboost.readthedocs.io)
 [![CatBoost](https://img.shields.io/badge/CatBoost-1.2+-FFCC00?logo=catboost&logoColor=black)](https://catboost.ai)
 [![LightGBM](https://img.shields.io/badge/LightGBM-4.0+-2E8B57?logo=lightgbm&logoColor=white)](https://lightgbm.readthedocs.io)
-[![Google Gemini](https://img.shields.io/badge/Google%20Gemini-Generative%20AI-8E75FF?logo=googlegemini&logoColor=white)](https://aistudio.google.com)
+[![Google Gemini 3.7 Flash](https://img.shields.io/badge/Google%20Gemini-3.7%20Flash-8E75FF?logo=googlegemini&logoColor=white)](https://aistudio.google.com)
 [![Streamlit](https://img.shields.io/badge/Streamlit-1.28+-FF4B4B?logo=streamlit&logoColor=white)](https://streamlit.io)
 [![SHAP](https://img.shields.io/badge/SHAP-Explainable%20AI-00A4EF)](https://shap.readthedocs.io)
 [![Pytest](https://img.shields.io/badge/Pytest-Passing-brightgreen?logo=pytest&logoColor=white)](https://pytest.org)
 
 An end-to-end, production-grade Machine Learning solution and interactive clinical web application for predicting patient health conditions (**Fit**, **At-Risk**, **Unhealthy**) from multi-modal physiological, demographic, and lifestyle indicators.
 
-Built with a heterogeneous **Soft-Voting Ensemble** of **XGBoost, CatBoost, and LightGBM**, feature engineering, 5-Fold Stratified Cross-Validation, SHAP model interpretability, **Google Gemini AI Conversational Assistant**, and a real-time Streamlit dashboard.
+Built with a heterogeneous **Soft-Voting Ensemble** of **XGBoost, CatBoost, and LightGBM**, feature engineering, 5-Fold Stratified Cross-Validation, SHAP model interpretability, **Google Gemini 3.7 Flash Conversational AI Assistant**, and a real-time Streamlit dashboard.
 
 ---
 

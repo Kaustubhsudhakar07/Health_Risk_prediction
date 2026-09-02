@@ -52,8 +52,8 @@ def ask_gemini_health_assistant(user_question: str, api_key: str = None, patient
 
         full_prompt += f"USER QUESTION: {user_question}\n\nASSISTANT ANSWER:"
 
-        # Try gemini-1.5-flash or gemini-pro
-        for model_name in ["gemini-1.5-flash", "gemini-2.0-flash", "gemini-pro"]:
+        # Try gemini-3.7-flash as primary model with fallbacks
+        for model_name in ["gemini-3.7-flash", "gemini-2.0-flash", "gemini-1.5-flash", "gemini-pro"]:
             try:
                 model = genai.GenerativeModel(model_name)
                 response = model.generate_content(full_prompt)
@@ -63,7 +63,7 @@ def ask_gemini_health_assistant(user_question: str, api_key: str = None, patient
                 continue
 
         # Fallback if specific model names fail
-        model = genai.GenerativeModel("gemini-1.5-flash")
+        model = genai.GenerativeModel("gemini-3.7-flash")
         response = model.generate_content(full_prompt)
         return response.text
 
