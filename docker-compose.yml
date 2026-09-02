@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  cardiohealth-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cardiohealth_ai
+    ports:
+      - "8501:8501"
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+    restart: unless-stopped

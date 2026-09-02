@@ -1,0 +1,36 @@
+{
+  "timestamp": "2026-09-02T15:41:19.539747",
+  "n_samples": 3000,
+  "n_features": 21,
+  "metrics": {
+    "xgb_mean_cv": 0.8044883987460615,
+    "cat_mean_cv": 0.8407527767871891,
+    "lgb_mean_cv": 0.8238719471034525,
+    "ensemble_oof_balanced_accuracy": 0.8320595942007141,
+    "ensemble_oof_accuracy": 0.8166666666666667,
+    "ensemble_oof_macro_f1": 0.7931885757055553
+  },
+  "feature_importances": {
+    "sleep_duration": 0.05236269161105156,
+    "heart_rate": 0.051393039524555206,
+    "bmi": 0.04847210273146629,
+    "calorie_expenditure": 0.020849591121077538,
+    "step_count": 0.02844502590596676,
+    "exercise_duration": 0.08176314830780029,
+    "water_intake": 0.019340185448527336,
+    "calorie_per_step": 0.027365079149603844,
+    "active_to_sleep_ratio": 0.05024813488125801,
+    "hydration_index": 0.02071044221520424,
+    "cardio_metabolic_risk": 0.17296990752220154,
+    "lifestyle_score": 0.06301980465650558,
+    "cardio_strain_ratio": 0.04147743061184883,
+    "sleep_debt_factor": 0.07438208907842636,
+    "diet_type": 0.019894499331712723,
+    "stress_level": 0.029774749651551247,
+    "sleep_quality": 0.038618769496679306,
+    "physical_activity_level": 0.034778423607349396,
+    "smoking_alcohol": 0.048010922968387604,
+    "gender": 0.020019033923745155,
+    "bmi_category": 0.056104935705661774
+  }
+}
