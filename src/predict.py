@@ -1,13 +1,14 @@
-"""
-Production Inference Engine for Single-Patient and Batch Health Condition Prediction.
-"""
-
 import json
+import sys
 from pathlib import Path
 import joblib
 import numpy as np
 import pandas as pd
 
+import src.features
+import src.models
+from src.features import HealthFeatureEngineer
+from src.models import SoftVotingEnsemble
 from src.config import (
     CLASS_NAMES,
     METADATA_SAVE_PATH,
@@ -33,13 +34,21 @@ class HealthRiskPredictor:
         self._load()
 
     def _load(self):
-        """Loads serialized pipeline or triggers training if missing."""
-        if not self.model_path.exists():
-            print(f"⚠️ Model bundle not found at {self.model_path}. Training default pipeline...")
+        """Loads serialized pipeline or retrains automatically if incompatible."""
+        loaded = False
+        if self.model_path.exists():
+            try:
+                self.bundle = joblib.load(self.model_path)
+                # Verify bundle has required keys
+                if all(k in self.bundle for k in ["preprocessor", "ensemble", "label_encoder"]):
+                    loaded = True
+            except Exception as e:
+                print(f"⚠️ Model unpickling notice ({e}). Auto-building fresh pipeline...")
+
+        if not loaded:
+            print("🚀 Initializing fresh optimized clinical pipeline bundle...")
             from src.pipeline import train_and_evaluate_pipeline
             self.bundle, _ = train_and_evaluate_pipeline(save_model=True, fast_mode=True)
-        else:
-            self.bundle = joblib.load(self.model_path)
 
         self.preprocessor = self.bundle["preprocessor"]
         self.ensemble = self.bundle["ensemble"]

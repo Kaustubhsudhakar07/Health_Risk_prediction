@@ -16,6 +16,10 @@ import streamlit as st
 ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
 
+import src.features
+import src.models
+from src.features import HealthFeatureEngineer
+from src.models import SoftVotingEnsemble
 from src.ai_assistant import ask_gemini_health_assistant
 from src.config import CLASS_NAMES, SAMPLE_DATA_PATH
 from src.predict import HealthRiskPredictor
