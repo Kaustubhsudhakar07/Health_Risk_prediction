@@ -53,7 +53,7 @@ def ask_gemini_health_assistant(user_question: str, api_key: str = None, patient
         full_prompt += f"USER QUESTION: {user_question}\n\nASSISTANT ANSWER:"
 
         # Active Google Gemini API models in order of priority
-        candidate_models = ["gemini-2.0-flash", "gemini-1.5-flash", "gemini-1.5-pro", "gemini-pro"]
+        candidate_models = ["gemini-3.6-flash", "gemini-3.7-flash", "gemini-flash-latest", "gemini-pro-latest"]
 
         last_error = None
         for model_name in candidate_models:
