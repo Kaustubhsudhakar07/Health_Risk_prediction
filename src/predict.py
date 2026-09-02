@@ -55,6 +55,13 @@ class HealthRiskPredictor:
         self.label_encoder = self.bundle["label_encoder"]
         self.feature_names = self.bundle["feature_names"]
         self.class_names = self.bundle.get("class_names", CLASS_NAMES)
+        self.metadata = {}
+        if METADATA_SAVE_PATH.exists():
+            try:
+                with open(METADATA_SAVE_PATH, "r", encoding="utf-8") as f:
+                    self.metadata = json.load(f)
+            except Exception:
+                pass
 
     def predict_single(self, patient_data: dict):
         """
