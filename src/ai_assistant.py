@@ -5,7 +5,13 @@ and lifestyle guidance powered by Google Gemini API.
 """
 
 import os
-import google.generativeai as genai
+
+try:
+    import google.generativeai as genai
+    HAS_GENAI = True
+except Exception:
+    genai = None
+    HAS_GENAI = False
 
 SYSTEM_INSTRUCTION = """
 You are 'CardioHealth AI Assistant', an empathetic, highly knowledgeable, evidence-based clinical intelligence assistant specializing in preventive cardiology, metabolic health, lifestyle medicine, and biomarker analysis.
@@ -177,8 +183,8 @@ def ask_gemini_health_assistant(user_question: str, api_key: str = None, patient
     """
     key = api_key or os.environ.get("GEMINI_API_KEY", "").strip()
 
-    # If no key provided, immediately deliver expert clinical response
-    if not key:
+    # If no key provided or genai not installed, deliver expert clinical response
+    if not HAS_GENAI or not key:
         return generate_expert_clinical_response(user_question, patient_context)
 
     try:
