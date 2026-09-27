@@ -24,17 +24,9 @@ from src.config import CLASS_NAMES, METADATA_SAVE_PATH, SAMPLE_DATA_PATH
 from src.predict import HealthRiskPredictor
 from src.visualizations import (
     PALETTE,
-    plot_classification_report_heatmap,
     plot_cohort_bar_metrics,
     plot_cohort_donut,
-    plot_correlation_heatmap,
-    plot_feature_importance_interactive,
-    plot_interactive_confusion_matrix,
-    plot_learning_curves,
     plot_local_shap_bars,
-    plot_model_benchmark_comparison,
-    plot_multiclass_pr_curves,
-    plot_multiclass_roc_curves,
     plot_patient_population_overlay,
     plot_patient_radar,
     plot_risk_gauge,
@@ -289,11 +281,10 @@ presets_data = {
 active_preset = presets_data.get(selected_preset, {})
 
 # Tabs
-tab1, tab2, tab3, tab4 = st.tabs([
+tab1, tab2, tab3 = st.tabs([
     "🩺 Real-Time Patient Assessment",
     "🤖 AI Clinical Assistant (Gemini 3.7)",
     "📁 Population Cohort Screening",
-    "📊 Model Intelligence & Deep Diagnostics",
 ])
 
 
@@ -706,134 +697,3 @@ with tab3:
             mime="text/csv",
         )
 
-
-# =============================================================
-# TAB 4: Model Intelligence & Deep ML Diagnostics
-# =============================================================
-with tab4:
-    st.markdown("### 📊 Model Architecture, Learning Curves & Diagnostic Matrices")
-    st.caption("Cross-validation benchmarks, convergence trajectories, multi-class confusion matrices, and explainability analytics.")
-
-    # High Level Benchmarks
-    m1, m2, m3, m4 = st.columns(4)
-    m1.metric("Training Volume", "690,088 Samples")
-    m2.metric("Validation Strategy", "5-Fold Stratified CV")
-    m3.metric("Ensemble Balanced Acc", "95.28%")
-    m4.metric("Macro F1-Score", "94.65%")
-
-    st.markdown("---")
-
-    # SECTION 1: Training & Convergence Curves (Matches screenshot 2)
-    st.markdown("#### 📈 Model Convergence & Learning Curves")
-    st.caption("Training vs. Validation metrics (Accuracy, Loss, Precision, Recall) across epochs.")
-    fig_lc = plot_learning_curves()
-    st.plotly_chart(fig_lc, use_container_width=True)
-
-    st.markdown("---")
-
-    # SECTION 2: Confusion Matrix & Classification Report (Matches screenshots 1 & 2)
-    st.markdown("#### 🎯 Multi-Class Validation Performance Matrices")
-    cm_col, cr_col = st.columns([1.1, 1.2], gap="large")
-
-    # Load metadata confusion matrix / classification report if available
-    metadata = getattr(predictor, "metadata", {})
-    if "metrics" in metadata and "confusion_matrix" in metadata["metrics"]:
-        cm_data = metadata["metrics"]["confusion_matrix"]
-    else:
-        # Default high-fidelity 3x3 confusion matrix
-        cm_data = [[812, 114, 28], [92, 854, 46], [21, 63, 970]]
-
-    with cm_col:
-        norm_toggle = st.checkbox("Normalize Confusion Matrix (%)", value=False)
-        fig_cm = plot_interactive_confusion_matrix(cm_data, CLASS_NAMES, normalize=norm_toggle)
-        st.plotly_chart(fig_cm, use_container_width=True)
-
-    with cr_col:
-        default_report = {
-            "fit": {"precision": 0.878, "recall": 0.851, "f1-score": 0.864, "support": 954},
-            "at-risk": {"precision": 0.828, "recall": 0.861, "f1-score": 0.844, "support": 992},
-            "unhealthy": {"precision": 0.929, "recall": 0.920, "f1-score": 0.925, "support": 1054},
-            "accuracy": 0.879,
-            "macro avg": {"precision": 0.878, "recall": 0.877, "f1-score": 0.878, "support": 3000},
-            "weighted avg": {"precision": 0.880, "recall": 0.879, "f1-score": 0.879, "support": 3000},
-        }
-        fig_cr = plot_classification_report_heatmap(default_report, CLASS_NAMES)
-        st.plotly_chart(fig_cr, use_container_width=True)
-
-    st.markdown("---")
-
-    # SECTION 3: Feature Importance & ROC Curves (Matches screenshot 3)
-    st.markdown("#### 🌟 Global Feature Importances & One-vs-Rest ROC Analysis")
-    fi_col, roc_col = st.columns(2, gap="large")
-
-    feat_importances = metadata.get("feature_importances", {
-        "sleep_duration": 0.160,
-        "heart_rate": 0.145,
-        "bmi": 0.129,
-        "calorie_expenditure": 0.114,
-        "step_count": 0.098,
-        "exercise_duration": 0.083,
-        "water_intake": 0.067,
-        "calorie_per_step": 0.051,
-        "active_to_sleep_ratio": 0.036,
-        "hydration_index": 0.020,
-    })
-
-    with fi_col:
-        fig_fi = plot_feature_importance_interactive(feat_importances, top_n=10)
-        st.plotly_chart(fig_fi, use_container_width=True)
-
-    with roc_col:
-        fig_roc = plot_multiclass_roc_curves(CLASS_NAMES)
-        st.plotly_chart(fig_roc, use_container_width=True)
-
-    st.markdown("---")
-
-    # SECTION 4: Precision-Recall & Biomarker Correlation
-    st.markdown("#### 🔬 Precision-Recall Diagnostics & Correlation Heatmap")
-    pr_col, corr_col = st.columns(2, gap="large")
-
-    with pr_col:
-        fig_pr = plot_multiclass_pr_curves(CLASS_NAMES)
-        st.plotly_chart(fig_pr, use_container_width=True)
-
-    with corr_col:
-        if not df_population.empty:
-            fig_corr = plot_correlation_heatmap(df_population)
-            st.plotly_chart(fig_corr, use_container_width=True)
-
-    st.markdown("---")
-
-    # SECTION 5: Benchmark Comparison & Biomarker Reference
-    st.markdown("#### 🏆 Ensemble Architecture & Domain Biomarkers")
-    bench_col, dict_col = st.columns([1.2, 1.4], gap="large")
-
-    with bench_col:
-        fig_bench = plot_model_benchmark_comparison()
-        st.plotly_chart(fig_bench, use_container_width=True)
-
-    with dict_col:
-        st.markdown("##### 🧬 Engineered Biomarkers Reference")
-        feat_df = pd.DataFrame({
-            "Biomarker Feature": [
-                "bmi_category",
-                "calorie_per_step",
-                "active_to_sleep_ratio",
-                "hydration_index",
-                "cardio_metabolic_risk",
-                "lifestyle_score",
-                "cardio_strain_ratio",
-                "sleep_debt_factor",
-            ],
-            "Clinical Description": [
-                "WHO classification categories (<18.5, 18.5-24.9, 25-29.9, ≥30)",
-                "Metabolic energy efficiency: Calories burned per step",
-                "Physical exertion to restorative sleep balance",
-                "Fluid intake normalized by metabolic rate",
-                "Normalized interaction between resting heart rate and BMI",
-                "Composite score across diet, stress, sleep, and habits",
-                "Cardiovascular strain: Heart rate normalized by step count",
-                "Sleep deficit under 7.5h scaled by stress multiplier",
-            ],
-        })
-        st.dataframe(feat_df, use_container_width=True, hide_index=True)
