@@ -23,18 +23,13 @@ from src.ai_assistant import ask_gemini_health_assistant
 from src.config import CLASS_NAMES, METADATA_SAVE_PATH, SAMPLE_DATA_PATH
 from src.predict import HealthRiskPredictor
 from src.visualizations import (
-    PALETTE,
     plot_cohort_bar_metrics,
     plot_cohort_donut,
-    plot_local_shap_bars,
-    plot_patient_population_overlay,
-    plot_patient_radar,
-    plot_risk_gauge,
 )
 
 # Page Configuration
 st.set_page_config(
-    page_title="CardioHealth AI • Clinical Machine Learning & Diagnostic Intelligence",
+    page_title="Health Care Prediction System",
     page_icon="🩺",
     layout="wide",
     initial_sidebar_state="collapsed",
@@ -239,9 +234,7 @@ df_population = get_population_data()
 # Hero Header
 st.markdown("""
 <div class="hero-container">
-    <div class="hero-pill">🩺 Clinical AI Diagnostic Platform • Soft-Voting Ensemble + Google Gemini 3.7 Flash</div>
-    <div class="hero-title">CardioHealth AI Stratification System</div>
-    <div class="hero-subtitle">Multi-class predictive health risk stratification engine combining physiological vitals, metabolic efficiency biomarkers, and explainable AI with interactive clinical diagnostics.</div>
+    <div class="hero-title">Health Care Prediction System</div>
 </div>
 """, unsafe_allow_html=True)
 
@@ -433,7 +426,7 @@ with tab1:
         <div class="verdict-banner {verdict_class}">
             <div class="verdict-title">{badge_text}</div>
             <div style="font-size: 1.05rem; color: #f8fafc; margin-bottom: 0.3rem;">
-                <b>Ensemble Confidence:</b> {confidence*100:.1f}% &nbsp;•&nbsp; <b>Model Consensus:</b> XGBoost + CatBoost + LightGBM
+                <b>Model Consensus:</b> XGBoost + CatBoost + LightGBM
             </div>
             <div style="color: rgba(255,255,255,0.85); font-size: 0.9rem;">{desc_text}</div>
         </div>
@@ -459,81 +452,7 @@ with tab1:
         with sc4:
             st.markdown(f'<div class="metric-card"><div class="metric-card-title">Daily Steps</div><div class="metric-card-val">{steps_val:,.0f} <span style="font-size:0.85rem; color:#34d399">({step_status})</span></div></div>', unsafe_allow_html=True)
 
-        st.markdown("")
 
-        # 3. Graph Row 1: Physiological Radar + Risk Dial Gauge
-        gcol1, gcol2 = st.columns([1.3, 1], gap="medium")
-        with gcol1:
-            st.markdown("##### 🕸️ Patient Physiological Radar Profile")
-            fig_radar = plot_patient_radar(payload)
-            st.plotly_chart(fig_radar, use_container_width=True)
-
-        with gcol2:
-            st.markdown("##### 🧭 Cardiometabolic Risk Gauge")
-            fig_gauge = plot_risk_gauge(condition, confidence, probs)
-            st.plotly_chart(fig_gauge, use_container_width=True)
-
-        st.markdown("")
-
-        # 4. Graph Row 2: Probabilities & Local SHAP Feature Explanations
-        sh1, sh2 = st.columns([1, 1.4], gap="medium")
-        with sh1:
-            st.markdown("##### 📈 Multi-Class Probability Distribution")
-            for cls_name, prob_val in probs.items():
-                p_color = "#34d399" if cls_name == "fit" else ("#fbbf24" if cls_name == "at-risk" else "#f87171")
-                st.markdown(f"""
-                <div style="display:flex; justify-content:space-between; margin-bottom:4px; font-weight:700;">
-                    <span style="color:{p_color};">{cls_name.upper()}</span>
-                    <span>{prob_val*100:.1f}%</span>
-                </div>
-                """, unsafe_allow_html=True)
-                st.progress(prob_val)
-
-            st.markdown("<br>", unsafe_allow_html=True)
-            st.markdown("##### 💡 Clinical Recommendations")
-            for tip in prediction["recommendations"][:3]:
-                st.markdown(f"- {tip}")
-
-        with sh2:
-            st.markdown("##### 🔍 Local SHAP Feature Attribution (Patient Drivers)")
-            fig_shap = plot_local_shap_bars(prediction.get("top_risk_drivers", []))
-            st.plotly_chart(fig_shap, use_container_width=True)
-
-        # 5. Graph Row 3: Patient vs. Population Density Overlay
-        if not df_population.empty:
-            st.markdown("")
-            st.markdown("##### 📊 Patient Biomarker vs. Population Distribution Benchmark")
-            pop_col_select, _ = st.columns([2, 3])
-            with pop_col_select:
-                chosen_feature = st.selectbox(
-                    "Select Biomarker to Benchmark:",
-                    ["bmi", "heart_rate", "sleep_duration", "step_count", "water_intake", "calorie_expenditure"],
-                    format_func=lambda x: {
-                        "bmi": "Body Mass Index (BMI)",
-                        "heart_rate": "Resting Heart Rate (bpm)",
-                        "sleep_duration": "Sleep Duration (hours)",
-                        "step_count": "Daily Steps",
-                        "water_intake": "Hydration (Liters)",
-                        "calorie_expenditure": "Calorie Burn (kcal)",
-                    }.get(x, x),
-                )
-            fig_pop = plot_patient_population_overlay(df_population, payload, chosen_feature)
-            st.plotly_chart(fig_pop, use_container_width=True)
-
-        # Download Report
-        report_text = f"""CARDIOHEALTH AI CLINICAL DIAGNOSTIC SUMMARY
-Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
-Diagnosis: {condition.upper()} (Ensemble Confidence: {confidence*100:.1f}%)
-Probabilities: At-Risk: {probs.get('at-risk', 0)*100:.1f}%, Fit: {probs.get('fit', 0)*100:.1f}%, Unhealthy: {probs.get('unhealthy', 0)*100:.1f}%
-Vitals: BMI {bmi_val} ({bmi_status}), HR {hr_val} bpm ({hr_status}), Sleep {sleep_val} hrs, Steps {steps_val}
-"""
-        st.markdown("")
-        st.download_button(
-            "📄 Export Clinical Diagnostic Summary (.txt)",
-            data=report_text,
-            file_name=f"cardiohealth_report_{condition}.txt",
-            mime="text/plain",
-        )
 
 
 # =============================================================
